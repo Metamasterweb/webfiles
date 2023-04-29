@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<!---<center><title>Typing Speed Test</title></center>--->
+	<script>
+		var timer;
+		var startTime;
+		var endTime;
+		var typedText = "";
+		var timerStarted = false;
+
+		function startTimer() {
+			startTime = new Date();
+			timerStarted = true;
+			timer = setInterval(checkTime, 10);
+		}
+
+		function checkTime() {
+			if (!timerStarted) {
+				return;
+			}
+
+			var elapsedTime = new Date() - startTime;
+			var remainingTime = 60000 - elapsedTime;
+			var seconds = Math.floor((remainingTime / 1000) % 60);
+			var milliseconds = remainingTime % 1000;
+
+			if (remainingTime <= 0) {
+				clearInterval(timer);
+				showResults();
+			} else {
+				document.getElementById("timer").innerHTML = seconds + ":" + milliseconds;
+			}
+		}
+
+		function showResults() {
+			endTime = new Date();
+			var timeDiff = endTime - startTime;
+			var secondsElapsed = timeDiff / 1000;
+			var numChars = typedText.length;
+			var wpm = Math.floor(numChars / 5 / secondsElapsed * 60);
+
+			document.getElementById("typing-speed").innerHTML = "Your typing speed is: " + wpm + " WPM";
+		}
+
+		function onKeyPress(event) {
+			if (!timerStarted) {
+				startTimer();
+			}
+
+			if (event.keyCode == 13) {
+				event.preventDefault();
+			}
+			typedText += event.key;
+		}
+	</script>
+</head>
+<body>
+	<h1>Typing Speed Test</h1>
+	<p>Type in the box below:</p>
+	<textarea rows="10" cols="50" onkeypress="onKeyPress(event)"></textarea>
+	<p>Time remaining: <span id="timer"></span></p>
+	<p id="typing-speed"></p>
+</body>
+</html>
